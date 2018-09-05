@@ -1,5 +1,5 @@
 # reweightfes
-R package for on-the-fly and Tiwary reweighting
+R package for on-the-fly and Tiwary reweighting of metadynamics and other biased molecular simulations 
 
 ToDo:
 * `read.colvar(filename, cvs=2:3, bias=4)`
