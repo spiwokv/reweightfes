@@ -27,7 +27,6 @@ for(i in 1:nbins) {
     fes[i,j]<-sum((icv1==i)*(icv2==j)*exp(1000*bp/8.314/temp)/ebtacc)
   }
 }
-
 fes <- -8.314*temp*log(fes)/1000
 fes <- fes - min(fes)
 fes[fes==Inf]<-100
