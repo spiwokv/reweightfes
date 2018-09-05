@@ -7,9 +7,9 @@ ToDo:
 * `print.colvar`
 * `summary.colvar`
 * `plot.colvar`
-* `reweightbias(COLVAR, xlim=c(-pi,pi), ylim=c(-pi,pi), npoints=60, maxfe=100,
+* `reweightbias(colvar=colvar, xlim=c(-pi,pi), ylim=c(-pi,pi), npoints=60, maxfe=100,
                 temp=300, eunits="kJ.mol")`
-* `reweightiwary(COLVAR, xlim=c(-pi,pi), ylim=c(-pi,pi), npoints=60, maxfe=100,
+* `reweightiwary(colvar=colvar, hills=hills, xlim=c(-pi,pi), ylim=c(-pi,pi), npoints=60, maxfe=100,
                 nfes=100, temp=300, gamma=10, eunits="kJ.mol")`
 
 
