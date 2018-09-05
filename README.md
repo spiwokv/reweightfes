@@ -8,8 +8,8 @@ ToDo:
 * `summary.colvar`
 * `plot.colvar`
 * `reweightbias(colvar=colvar, xlim=c(-pi,pi), ylim=c(-pi,pi), npoints=60, maxfe=100,
-                temp=300, eunits="kJ.mol")`
+                temp=300, eunits="kJ/mol")`
 * `reweightiwary(colvar=colvar, hills=hills, xlim=c(-pi,pi), ylim=c(-pi,pi), npoints=60, maxfe=100,
-                nfes=100, temp=300, gamma=10, eunits="kJ.mol")`
+                nfes=100, temp=300, gamma=10, eunits="kJ/mol")`
 
 
