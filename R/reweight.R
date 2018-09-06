@@ -17,22 +17,22 @@ for(i in 1:nfes) {
 icv1 <- ceiling((colvar[,2]+pi)*nbins/2/pi)
 icv2 <- ceiling((colvar[,3]+pi)*nbins/2/pi)
 bp <- colvar[,4]
-ebtacc <- rep(ebtac, each=nfes)
+ebtacc <- rep(ebtac, each=nrow(colvar)/nfes)
 if(length(ebtacc)>nrow(colvar)) ebtacc<-ebtacc[1:nrow(colvar)]
 if(length(ebtacc)<nrow(colvar)) ebtacc[length(ebtacc):nrow(colvar)]<-ebtacc[length(ebtacc)]
 
-fes <- matrix(rep(0, nbins*nbins), nrow=nbins)
+ofes <- matrix(rep(0, nbins*nbins), nrow=nbins)
 for(i in 1:nbins) {
   for(j in 1:nbins) {
-    fes[i,j]<-sum((icv1==i)*(icv2==j)*exp(1000*bp/8.314/temp)/ebtacc)
+    ofes[i,j]<-sum((icv1==i)*(icv2==j)*exp(1000*bp/8.314/temp)/ebtacc)
   }
 }
-fes <- -8.314*temp*log(fes)/1000
-fes <- fes - min(fes)
-fes[fes==Inf]<-100
+ofes <- -8.314*temp*log(ofes)/1000
+ofes <- ofes - min(ofes)
+ofes[ofes==Inf]<-100
 png("fes.png")
 tfes <- fes(hillsf, npoints=nbins)
-tfes$fes <- fes
+tfes$fes <- ofes
 plot(tfes)
 dev.off()
 
