@@ -21,9 +21,9 @@
 #' l8<-" 1.400000 -1.970727 2.993245 0.143235"
 #' l9<-" 1.600000 -2.396591 2.939432 0.004027"
 #' l10<-" 1.800000 -2.262091 2.837568 0.017447"
-#' foursnaps<-c(l1,l2,l3,l4)
+#' snaps<-c(l1,l2,l3,l4,l5,l6,l7,l8,l9,l10)
 #' tf <- tempfile()
-#' writeLines(foursnaps, tf)
+#' writeLines(snaps, tf)
 #' read.colvar(tf, timec=1, cvs=2:3, bias=4)
 read.colvar<-function(file="COLVAR", cvsc=2:3, biasc=4) {
   colvarf<-read.table(file, header=F, comment.char="#")
