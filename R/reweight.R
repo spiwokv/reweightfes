@@ -4,8 +4,8 @@ library(metadynminer)
 #                  imin=1, imax=NULL, xlim=NULL, ylim=NULL)
 #reweightbonomi(cvfile, npoints=60, maxfe=100, temp=300, eunits="kJ/mol",
 #               imin=1, imax=NULL, xlim=NULL, ylim=NULL)
-#reweightiwary(cvfile, hillsfile, npoints=60, maxfe=100, nfes=100, temp=300,
-#              gamma=10, eunits="kJ/mol", imin=1, imax=NULL, xlim=NULL, ylim=NULL, usefes2=F)
+#reweighttiwary(cvfile, hillsfile, npoints=60, maxfe=100, nfes=100, temp=300,
+#               gamma=10, eunits="kJ/mol", imin=1, imax=NULL, xlim=NULL, ylim=NULL, usefes2=F)
 
 hillsf<-read.hills("../data/HILLS", per=c(T,T))
 colvar<-read.table("../data/COLVAR")
