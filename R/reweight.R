@@ -29,7 +29,7 @@ library(metadynminer)
 #'
 #' @export
 #' @examples
-#' tfes<-reweighttiwary(cvfile=acealanmeCVs, hillsfile=acealanme, imax=5000)
+#' tfes<-reweighttiwary(cvs=acealanmeCVs, hills=acealanme, imax=5000)
 reweighttiwary(cvs, hills, npoints=60, maxfe=100, nfes=100, temp=300,
                gamma=10, eunits="kJ/mol", imin=1, imax=NULL, xlim=NULL, ylim=NULL, usefes2=F) {
   #hillsf<-read.hills("../data/HILLS", per=c(T,T))
