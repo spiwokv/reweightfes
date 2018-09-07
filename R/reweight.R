@@ -15,7 +15,9 @@ temp <- 300
 gamma <- 10
 ebtac <- c()
 framestosum <- hillsf$size[1]/nfes
-tfes <- fes(hillsf, imax=1, npoints=nbins)-fes(hillsf, imax=1, npoints=nbins)
+suppressWarnings(
+  tfes <- fes(hillsf, imax=1, npoints=nbins)-fes(hillsf, imax=1, npoints=nbins)
+)
 for(i in 1:nfes) {
   tfes <- tfes + fes(hillsf, imin=(i-1)*framestosum+1, imax=i*framestosum, npoints=nbins)
   s1 <- sum(exp(-1000*tfes$fes/8.314/temp))
