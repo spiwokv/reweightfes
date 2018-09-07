@@ -6,7 +6,7 @@
 #' @param file COLVAR file from Plumed.
 #' @param timec 1 index of the column containing time.
 #' @param cvsc 2:3 numerical vector of indexes of columns containing collective variables.
-#' @param biasc 4 index of the column containing the bias potential.
+#' @param biasc 4 index of the column containing the bias potential (NULL for no bias).
 #' @return colvarfile object.
 #'
 #' @export
@@ -30,13 +30,17 @@ read.colvar<-function(file="COLVAR", cvsc=2:3, biasc=4) {
   if(sum(ncol(colvarf)>cvs)>0) {
     stop("Error: Number of columns in COLVAR file smaller than CV indexes")
   }
-  if(ncol(colvarf)>biasc) {
-    stop("Error: Number of columns in COLVAR file smaller than bias index")
-  }
   if(ncol(colvarf)>timec) {
     stop("Error: Number of columns in COLVAR file smaller than time index")
   }
-  colvars<-list(filename=file, times=colvatf[,timec], cvs=colvarf[,cvs], bias=colvarf[,biasc])
+  if(is.null(biasc)) {
+    colvars<-list(filename=file, times=colvatf[,timec], cvs=colvarf[,cvs], bias=NULL)
+  } else {
+    if(ncol(colvarf)>biasc) {
+      stop("Error: Number of columns in COLVAR file smaller than bias index")
+    }
+    colvars<-list(filename=file, times=colvatf[,timec], cvs=colvarf[,cvs], bias=colvarf[,biasc])
+  }
   class(colvars) <- "colvarfilefile"
   return(colvars)
 }
