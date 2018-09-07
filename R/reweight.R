@@ -1,6 +1,6 @@
 library(metadynminer)
 
-#reweightboltzmann(cvfile, npoints=60, maxfe=100, temp=300, eunits="kJ/mol",
+#weightboltzmann(cvfile, npoints=60, maxfe=100, temp=300, eunits="kJ/mol",
 #                  imin=1, imax=NULL, xlim=NULL, ylim=NULL)
 #reweightbonomi(cvfile, npoints=60, maxfe=100, temp=300, eunits="kJ/mol",
 #               imin=1, imax=NULL, xlim=NULL, ylim=NULL)
