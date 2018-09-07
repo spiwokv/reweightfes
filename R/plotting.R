@@ -38,11 +38,20 @@ plot.colvarfile<-function(x, ignoretime=FALSE,
   ylims<-NULL
   if(!is.null(xlim)) {xlims<-xlim}
   if(!is.null(ylim)) {ylims<-ylim}
-  if(nrow(cvfile$cvs)==1) {
+  if(cvfile$ncvs==1) {
     if(is.null(xlab)) xlab="time"
     if(is.null(ylab)) ylab="CV"
+    if(is.null(cvfile$times)) {
+      if(cvfile$ncvs==1) {
+        times <- 1:length(cvfile$cvs)
+      } else {
+        times <- 1:nrow(cvfile$cvs)
+      }
+    } else {
+      times <- cvfile$times
+    }
     if(ignoretime) {
-      plot(seq(from=cvfile$times[1],by=cvfile$times[2],length.out=length(cvfile$times)),
+      plot(seq(from=times[1],by=times[2],length.out=length(times)),
            cvfile$cvs, type="l",
            xlab=xlab, ylab=ylab,
            main=main, sub=sub,
@@ -50,7 +59,7 @@ plot.colvarfile<-function(x, ignoretime=FALSE,
            col=col, cex=cex, lwd=lwd,
            asp=asp, axes=axes)
     } else {
-      plot(cvfile$times, cvfile$cvs, type="l",
+      plot(times, cvfile$cvs, type="l",
            xlab=xlab, ylab=ylab,
            main=main, sub=sub,
            xlim=xlims, ylim=ylims,
@@ -58,7 +67,7 @@ plot.colvarfile<-function(x, ignoretime=FALSE,
            asp=asp, axes=axes)
     }
   }
-  if(nrow(cvfile$cvs)==2) {
+  if(cvfile$ncvs==2) {
     if(is.null(xlab)) xlab="CV1"
     if(is.null(ylab)) ylab="CV2"
     plot(cvfile$cvs[,1], cvfile$cvs[,2], type="p",
@@ -68,7 +77,7 @@ plot.colvarfile<-function(x, ignoretime=FALSE,
          pch=pch, col=col, bg=bg, cex=cex, lwd=lwd,
          asp=asp, axes=axes)
   }
-  if(nrow(cvfile$cvs)>2) {
+  if(cvfile$ncvs>2) {
     cat("plot.colvarfile does not work for a colvarfile with more collective\n")
     cat("variables than 2, but you can still use $times and $cvs with default\n")
     cat("plot function.\n")
@@ -102,19 +111,28 @@ points.colvarfile<-function(x, ignoretime=FALSE,
                            pch=1, col="black", bg="red", cex=1,
                            lwd=1, ...) {
   cvfile <-x
-  if(nrow(cvfile$cvs)==1) {
+  if(cvfile$ncvs==1) {
+    if(is.null(cvfile$times)) {
+      if(cvfile$ncvs==1) {
+        times <- 1:length(cvfile$cvs)
+      } else {
+        times <- 1:nrow(cvfile$cvs)
+      }
+    } else {
+      times <- cvfile$times
+    }
     if(ignoretime) {
-      points(seq(from=cvfile$times[1],by=cvfile$times[2],length.out=length(cvfile$times)),
+      points(seq(from=times[1],by=times[2],length.out=length(times)),
              cvfile$cvs, col=col, cex=cex, lwd=lwd)
     } else {
-      points(cvfile$times, cvfile$cvs, col=col, cex=cex, lwd=lwd)
+      points(times, cvfile$cvs, col=col, cex=cex, lwd=lwd)
     }
   }
-  if(nrow(cvfile$cvs)==2) {
+  if(cvfile$ncvs==2) {
     points(cvfile$cvs[,1], cvfile$cvs[,2],
            pch=pch, col=col, bg=bg, cex=cex, lwd=lwd)
   }
-  if(nrow(cvfile$cvs)>2) {
+  if(cvfile$ncvs>2) {
     cat("points.colvarfile does not work for a colvarfile with more collective\n")
     cat("variables than 2, but you can still use $times and $cvs with default\n")
     cat("plot/points function.\n")
@@ -142,20 +160,28 @@ points.colvarfile<-function(x, ignoretime=FALSE,
 lines.colvarfile<-function(x, ignoretime=FALSE,
                            lwd=1, col="black",...) {
   cvfile <-x
-  if(nrow(cvfile$cvs)==1) {
+  if(cvfile$ncvs==1) {
+    if(is.null(cvfile$times)) {
+      if(cvfile$ncvs==1) {
+        times <- 1:length(cvfile$cvs)
+      } else {
+        times <- 1:nrow(cvfile$cvs)
+      }
+    } else {
+      times <- cvfile$times
+    }
     if(ignoretime) {
-      lines(seq(from=cvfile$times[1],by=cvfile$times[2],length.out=length(cvfile$times)),
+      lines(seq(from=times[1],by=times[2],length.out=length(times)),
             cvfile$cvs, col=col, lwd=lwd)
     } else {
-      lines(hills$hillsfile[,1], hills$hillsfile[,2],
-           col=col, lwd=lwd)
+      lines(times, cvfile$cvs, col=col, lwd=lwd)
     }
   }
-  if(nrow(cvfile$cvs)==2) {
+  if(cvfile$ncvs==2) {
     lines(cvfile$cvs[,1], cvfile$cvs[,2],
           col=col, lwd=lwd)
   }
-  if(nrow(cvfile$cvs)>2) {
+  if(cvfile$ncvs>2) {
     cat("lines.colvarfile does not work for a colvarfile with more collective\n")
     cat("variables than 2, but you can still use $times and $cvs with default\n")
     cat("plot/lines function.\n")
@@ -194,15 +220,24 @@ plotbias<-function(cvfile, ignoretime=FALSE,
     }
     if(is.null(xlab)) xlab="time"
     if(is.null(ylab)) ylab="bias potential"
+    if(is.null(cvfile$times)) {
+      if(cvfile$ncvs==1) {
+        times <- 1:length(cvfile$cvs)
+      } else {
+        times <- 1:nrow(cvfile$cvs)
+      }
+    } else {
+      times <- cvfile$times
+    }
     if(ignoretime) {
-      plot(seq(from=cvfile$times[1],by=cvfile$times[2],length.out=length(cvfile$times)),
+      plot(seq(from=times[1],by=times[2],length.out=length(times)),
            cvfile$bias, type="l",
            xlab=xlab, ylab=ylab,
            main=main, sub=sub,
            col=col, lwd=lwd,
            asp=asp, axes=axes)
     } else {
-      plot(cvfile$times, cvfile$bias,
+      plot(times, cvfile$bias,
            xlab=xlab, ylab=ylab,
            main=main, sub=sub,
            col=col, lwd=lwd,

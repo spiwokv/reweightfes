@@ -24,24 +24,31 @@
 #' snaps<-c(l1,l2,l3,l4,l5,l6,l7,l8,l9,l10)
 #' tf <- tempfile()
 #' writeLines(snaps, tf)
-#' read.colvar(tf, timec=1, cvs=2:3, bias=4)
-read.colvar<-function(file="COLVAR", cvsc=2:3, biasc=4) {
+#' read.colvar(tf, timec=1, cvsc=2:3, biasc=4)
+read.colvar<-function(file="COLVAR", timesc=1, cvsc=2:3, biasc=4) {
   colvarf<-read.table(file, header=F, comment.char="#")
-  if(sum(ncol(colvarf)>cvs)>0) {
+  if(sum(ncol(colvarf)<cvsc)>0) {
     stop("Error: Number of columns in COLVAR file smaller than CV indexes")
   }
-  if(ncol(colvarf)>timec) {
-    stop("Error: Number of columns in COLVAR file smaller than time index")
-  }
   if(is.null(biasc)) {
-    colvars<-list(filename=file, times=colvatf[,timec], cvs=colvarf[,cvs], bias=NULL)
+    bias = NULL
   } else {
     if(ncol(colvarf)>biasc) {
       stop("Error: Number of columns in COLVAR file smaller than bias index")
     }
-    colvars<-list(filename=file, times=colvatf[,timec], cvs=colvarf[,cvs], bias=colvarf[,biasc])
+    bias=colvarf[,biasc]
   }
-  class(colvars) <- "colvarfilefile"
+  if(is.null(timesc)) {
+    times=NULL
+  } else {
+    if(ncol(colvarf)<timesc) {
+      stop("Error: Number of columns in COLVAR file smaller than time index")
+    }
+    times=colvarf[,timesc]
+  }
+  colvars<-list(filename=file, times=times, ncvs=length(cvsc), cvs=colvarf[,cvsc], bias=bias)
+  class(colvars) <- "colvarfile"
+  cat("COLVAR file read\n")
   return(colvars)
 }
 
@@ -59,9 +66,13 @@ print.colvarfile<-function(x,...) {
   cat("collective variable record ")
   cat(x$filename)
   cat(" containing ")
-  cat(ncol(x$cvs))
+  cat(x$ncvs)
   cat(" collective variables and ")
-  cat(nrow(x$cvs))
+  if(x$ncvs>1) {
+    cat(nrow(x$cvs))
+  } else {
+    cat(length(x$cvs))
+  }
   cat(" records\n")
 }
 
@@ -80,29 +91,49 @@ summary.colvarfile<-function(x,...) {
   cat("collective variable record ")
   cat(x$filename)
   cat(" containing ")
-  cat(ncol(x$cvs))
+  cat(x$ncvs)
   cat(" collective variables and ")
-  cat(nrow(x$cvs))
+  if(x$ncvs>1) {
+    cat(nrow(x$cvs))
+  } else {
+    cat(length(x$cvs))
+  }
   cat(" records\n")
-  cat("Time from ")
-  cat(min(x$times))
-  cat(" to ")
-  cat(max(x$times))
-  cat("\n")
-  for(i in 1:ncol(x$cvs)) {
+  if(!is.null(x$times)) {
+    cat("Time from ")
+    cat(min(x$times))
+    cat(" to ")
+    cat(max(x$times))
+    cat("\n")
+  } else {
+    cat("No times\n")
+  }
+  for(i in 1:x$ncvs) {
     cat("CV")
     cat(i)
     cat(" from ")
-    cat(min(x$cvs[,i]))
+    if(x$ncvs>1) {
+      cat(min(x$cvs[,i]))
+    } else {
+      cat(min(x$cvs))
+    }
     cat(" to ")
-    cat(max(x$cvs[,i]))
+    if(x$ncvs>1) {
+      cat(max(x$cvs[,i]))
+    } else {
+      cat(max(x$cvs))
+    }
     cat("\n")
   }
-  cat("Bias from ")
-  cat(min(x$bias))
-  cat(" to ")
-  cat(max(x$bias))
-  cat("\n")
+  if(!is.null(x$bias)) {
+   cat("Bias from ")
+    cat(min(x$bias))
+    cat(" to ")
+    cat(max(x$bias))
+    cat("\n")
+  } else {
+    cat("No bias\n")
+  }
 }
 
 #' Print first n lines of colvarfile
@@ -117,12 +148,42 @@ summary.colvarfile<-function(x,...) {
 #' @examples
 #' head(acealanmeCVs)
 head.colvarfile<-function(x, n=10,...) {
-  colnames <- c("time")
-  for(i in 1:ncol(x$cvs)) {
-    colnames <- c(colnames, paste("CV", toString(i), sep=""))
+  cvnames <- c()
+  for(i in 1:x$ncvs) {
+    cvnames <- c(cvnames, paste("CV", toString(i), sep=""))
   }
-  colnames <- c(colnames, "bias")
-  outdf <- data.frame(x$times[1:n], x$cvs[1:n,], x$bias[1:n])
+  if(is.null(x$times) & is.null(x$bias)) {
+    colnames <- c(cvnames)
+    if(x$ncvs>1) {
+      outdf <- data.frame(x$cvs[1:n,])
+    } else {
+      outdf <- data.frame(x$cvs[1:n])
+    }
+  }
+  if(is.null(x$times) & !is.null(x$bias)) {
+    colnames <- c(cvnames, "bias")
+    if(x$ncvs>1) {
+      outdf <- data.frame(x$cvs[1:n,], x$bias[1:n])
+    } else {
+      outdf <- data.frame(x$cvs[1:n], x$bias[1:n])
+    }
+  }
+  if(!is.null(x$times) & is.null(x$bias)) {
+    colnames <- c("time", cvnames)
+    if(x$ncvs>1) {
+      outdf <- data.frame(x$times[1:n], x$cvs[1:n,])
+    } else {
+      outdf <- data.frame(x$times[1:n], x$cvs[1:n])
+    }
+  }
+  if(!is.null(x$times) & !is.null(x$bias)) {
+    colnames <- c("time", cvnames, "bias")
+    if(x$ncvs>1) {
+      outdf <- data.frame(x$times[1:n], x$cvs[1:n,], x$bias[1:n])
+    } else {
+      outdf <- data.frame(x$times[1:n], x$cvs[1:n], x$bias[1:n])
+    }
+  }
   names(outdf) <- colnames
   return(outdf)
 }
@@ -139,12 +200,49 @@ head.colvarfile<-function(x, n=10,...) {
 #' @examples
 #' tail(acealanmeCVs)
 tail.colvarfile<-function(x, n=10,...) {
-  colnames <- c("time")
-  for(i in 1:ncol(x$cvs)) {
-    colnames <- c(colnames, paste("CV", toString(i), sep=""))
+  if(x$ncvs>1) {
+    nlines <- nrow(x$cvs)
+  } else {
+    nlines <- length(x$cvs)
   }
-  colnames <- c(colnames, "bias")
-  outdf <- data.frame(x$times[length(time)-n:length(time)], x$cvs[length(time)-n:length(time),], x$bias[length(time)-n:n])
+  cvnames <- c()
+  for(i in 1:x$ncvs) {
+    cvnames <- c(cvnames, paste("CV", toString(i), sep=""))
+  }
+  if(is.null(x$times) & is.null(x$bias)) {
+    colnames <- c(cvnames)
+    if(x$ncvs>1) {
+      outdf <- data.frame(x$cvs[(nlines-n):nlines,])
+    } else {
+      outdf <- data.frame(x$cvs[(nlines-n):nlines])
+    }
+  }
+  if(is.null(x$times) & !is.null(x$bias)) {
+    colnames <- c(cvnames, "bias")
+    if(x$ncvs>1) {
+      outdf <- data.frame(x$cvs[(nlines-n):nlines,], x$bias[(nlines-n):nlines])
+    } else {
+      outdf <- data.frame(x$cvs[(nlines-n):nlines], x$bias[(nlines-n):nlines])
+    }
+  }
+  if(!is.null(x$times) & is.null(x$bias)) {
+    colnames <- c("time", cvnames)
+    if(x$ncvs>1) {
+      outdf <- data.frame(x$times[(nlines-n):nlines], x$cvs[(nlines-n):nlines,])
+    } else {
+      outdf <- data.frame(x$times[(nlines-n):nlines], x$cvs[(nlines-n):nlines])
+    }
+  }
+  if(!is.null(x$times) & !is.null(x$bias)) {
+    colnames <- c("time", cvnames, "bias")
+    if(x$ncvs>1) {
+      outdf <- data.frame(x$times[(nlines-n):nlines], x$cvs[(nlines-n):nlines,],
+                          x$bias[(nlines-n):nlines])
+    } else {
+      outdf <- data.frame(x$times[(nlines-n):nlines], x$cvs[(nlines-n):nlines],
+                          x$bias[(nlines-n):nlines])
+    }
+  }
   names(outdf) <- colnames
   return(outdf)
 }
@@ -152,14 +250,13 @@ tail.colvarfile<-function(x, n=10,...) {
 #' @export
 `+.colvarfile`<-function(cv1, cv2) {
   cat("Warning: File name of only the firs colvar file will be retained\n")
-  if(ncol(cv1$cvs)!=ncol(cv2$cvs)) {
+  if(cv1$ncvs!=cv2$ncvs) {
     stop("Error: You can sum only colvar files of same dimension")
   }
   cat("Warning: Times will be concatenated, not prolonged\n")
-  colvars<-list(filename=cv1$file, times=c(cv1$times, cv2$times),
+  colvars<-list(filename=cv1$file, times=c(cv1$times, cv2$times), ncvs=cv1$ncvs,
                 cvs=rbind(cv1$cvs,cv2$cvs), bias=c(cv1$bias,cv2$bias))
-  class(colvars) <- "colvarfilefile"
+  class(colvars) <- "colvarfile"
   return(colvars)
 }
-
 
