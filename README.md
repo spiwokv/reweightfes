@@ -1,5 +1,5 @@
 # reweightfes
-R package for on-the-fly and Tiwary reweighting of metadynamics and other biased molecular simulations 
+R package for Bonomi and Tiwary reweighting of metadynamics and other biased molecular simulations 
 
 Done:
 * `read.colvar(filename, cvs=2:3, bias=4)`
@@ -16,4 +16,6 @@ Todo:
 * `feprofgibbs(minima, colvar)`
 * `feprofbonomi(minima, colvar)`
 * `feproftiwary(minima, colvar)`
+* if placed to metadynminer, add option fes and minima without hills
+
 
