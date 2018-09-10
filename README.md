@@ -16,6 +16,7 @@ Todo:
 * `feprofgibbs(minima, colvar)`
 * `feprofbonomi(minima, colvar)`
 * `feproftiwary(minima, colvar)`
+* `imin` for `reweighttiwary`?
 * if placed to metadynminer, add option fes and minima without hills
 
 
