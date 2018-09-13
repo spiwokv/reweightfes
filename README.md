@@ -1,5 +1,5 @@
 # reweightfes
-R package for Bonomi and Tiwary reweighting of metadynamics and other biased molecular simulations 
+R package for Torrie-Valleau, Bonomi and Tiwary reweighting of metadynamics and other biased molecular simulations 
 
 Done:
 * `read.colvar(filename, cvs=2:3, bias=4)`
